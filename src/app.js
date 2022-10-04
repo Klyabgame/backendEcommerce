@@ -4,7 +4,7 @@ import indexRoutes from "./routes/index.routes.js";
 import authRoutes from './routes/auth.routes.js';
 import ecommerceRoutes from './routes/ecommer.routes.js';
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000 ;
 const app = express();
 
 app.use(cors())
