@@ -121,23 +121,23 @@ router.get("/api/renew", revalidateToken, async (req, res) => {
 
 //MOSTRAR 1 USUARIO
 
-router.get("/api/auth/crearUsuario/:id", (req, res) => {
+router.get("/api/auth/mostrarUsuario/:id", (req, res) => {
   connection.query(
     "SELECT * FROM USUARIO WHERE idUSUARIO=?",
     [req.params.id],
-    (error, fila) => {
+    (error, result) => {
       if (error) {
         throw error;
       } else {
-        res.send(fila);
+        res.send(result);
       }
     }
   );
 });
 
 //ACTUALIZAR USUARIO
-router.put("/api/auth/crearUsuario/:id", (req, res) => {
-  const idUsuario=req.params.id;
+router.put("/api/auth/actualizarUsuario/:id", (req, res) => {
+  const idUsuario = req.params.id;
   const {
     nombre,
     apellidoPaterno,
@@ -147,9 +147,9 @@ router.put("/api/auth/crearUsuario/:id", (req, res) => {
     contacto2,
     fechaNacimiento,
     foto,
-    
   } = req.body;
-  let data = [
+
+  let data = {
     nombre,
     apellidoPaterno,
     apellidoMaterno,
@@ -159,19 +159,21 @@ router.put("/api/auth/crearUsuario/:id", (req, res) => {
     fechaNacimiento,
     foto,
     idUsuario,
-  ];
+  };
   let sql = `UPDATE USUARIO SET nombre=?,apellidoPaterno=?,apellidoMaterno=?,direccion=?,contacto1=?,contacto2=?,fechaNacimiento=?,foto=? WHERE idUsuario=${idUsuario}`;
-  connection.query(sql, data, function (error, results) {
+  const arrayData = Array.from(Object.values(data));
+
+  connection.query(sql, arrayData, function (error, results) {
     if (error) {
       throw error;
     } else {
-      res.send({ok:true, message:'USUARIO ACTUALIZADO CORRECTAMENTE'})
-
+      res.send({
+        ok: true,
+        message: "USUARIO ACTUALIZADO CORRECTAMENTE",
+        ...data,
+      });
     }
   });
 });
-
-
-
 
 export default router;
