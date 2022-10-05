@@ -7,6 +7,7 @@ import { revalidateToken } from "../middleware/revalidateToken.js";
 
 const router = Router();
 
+//REGISTRA , BUSCA POR DNI Y EMAIL
 router.post("/api/auth/crearUsuario", (req, res) => {
   const {
     dni,
@@ -76,7 +77,7 @@ router.post("/api/auth/crearUsuario", (req, res) => {
     }
   });
 });
-
+//VALIDA USUARIO
 router.post("/api/auth/login", (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
@@ -105,6 +106,7 @@ router.post("/api/auth/login", (req, res) => {
   });
 });
 
+// RENUEVA EL TOKEN
 router.get("/api/renew", revalidateToken, async (req, res) => {
   const payloadToken = req.body;
 
@@ -116,5 +118,60 @@ router.get("/api/renew", revalidateToken, async (req, res) => {
     token,
   });
 });
+
+//MOSTRAR 1 USUARIO
+
+router.get("/api/auth/crearUsuario/:id", (req, res) => {
+  connection.query(
+    "SELECT * FROM USUARIO WHERE idUSUARIO=?",
+    [req.params.id],
+    (error, fila) => {
+      if (error) {
+        throw error;
+      } else {
+        res.send(fila);
+      }
+    }
+  );
+});
+
+//ACTUALIZAR USUARIO
+router.put("/api/auth/crearUsuario/:id", (req, res) => {
+  const idUsuario=req.params.id;
+  const {
+    nombre,
+    apellidoPaterno,
+    apellidoMaterno,
+    direccion,
+    contacto1,
+    contacto2,
+    fechaNacimiento,
+    foto,
+    
+  } = req.body;
+  let data = [
+    nombre,
+    apellidoPaterno,
+    apellidoMaterno,
+    direccion,
+    contacto1,
+    contacto2,
+    fechaNacimiento,
+    foto,
+    idUsuario,
+  ];
+  let sql = `UPDATE USUARIO SET nombre=?,apellidoPaterno=?,apellidoMaterno=?,direccion=?,contacto1=?,contacto2=?,fechaNacimiento=?,foto=? WHERE idUsuario=${idUsuario}`;
+  connection.query(sql, data, function (error, results) {
+    if (error) {
+      throw error;
+    } else {
+      res.send({ok:true, message:'USUARIO ACTUALIZADO CORRECTAMENTE'})
+
+    }
+  });
+});
+
+
+
 
 export default router;
