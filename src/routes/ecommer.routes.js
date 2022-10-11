@@ -5,7 +5,7 @@ import { cache } from "../middleware/cache.js";
 const router = Router();
 
 router.get("/api/ecommerce/products", cache, (req, res) => {
-  const sql = "SELECT * FROM PRODUCTOS";
+  const sql = "SELECT idProductos, nombreProducto, descripcion, precioUnitario, stock,imagenProducto, nombreCategoria, nombreMarca FROM PRODUCTOS INNER JOIN CATEGORIA on PRODUCTOS.idCategoria=CATEGORIA.idCategoria INNER JOIN MARCA on PRODUCTOS.idMarca=MARCA.idMarca";
   connection.query(sql, (err, result) => {
     if (err) {
       throw err;
