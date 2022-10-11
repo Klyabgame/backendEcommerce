@@ -3,7 +3,7 @@ import { connection } from "../db.js";
 import { cache } from "../middleware/cache.js";
 
 const router = Router();
-//LEER BIEN LOS COMENTARIOS ANTES DE CUALQUIER USO.
+//LEER BIEN LOS COMENTARIOS ANTES DE CUALQUIER USO..
 
 //Este primer get servira para mostrarnos todos los carritos --EXPERIMENTAL--
 router.get("/api/carrito/", (req, res) => {
