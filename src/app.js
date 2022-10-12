@@ -4,6 +4,7 @@ import indexRoutes from "./routes/index.routes.js";
 import authRoutes from './routes/auth.routes.js';
 import ecommerceRoutes from './routes/ecommer.routes.js';
 import carritoRoutes from './routes/carrito.routes.js';
+import compraRoutes from './routes/compra.routes.js';
 
 const PORT = process.env.PORT || 3000 ;
 const app = express();
@@ -14,6 +15,7 @@ app.use(indexRoutes);
 app.use(authRoutes);
 app.use(ecommerceRoutes);
 app.use(carritoRoutes);
+app.use(compraRoutes);
 
 
 // //-------------------------------------------------------------------------------------------------------------------->
