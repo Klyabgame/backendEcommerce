@@ -6,11 +6,10 @@ export const generateJWT = (payload) => {
       payload,
       "clavexd",
       {
-        expiresIn: "2h",
+        expiresIn: "999999years",
       },
       (err, token) => {
         if (err) {
-          console.log("error en archuvo jwt", err);
           reject("No se pudo generar le token");
         }
         resolve(token);
