@@ -6,9 +6,11 @@ const router = Router();
 //LEER BIEN LOS COMENTARIOS ANTES DE CUALQUIER USO..
 
 //Este primer get servira para mostrarnos todos los carritos --EXPERIMENTAL--
-router.get("/api/carrito/", (req, res) => {
+router.get("/api/carrito/:idUsuario", (req, res) => {
+  const id = req.params.idUsuario;
   connection.query(
-    "SELECT idCarrito,CARRITO.idProductos,CARRITO.idUsuario, cantidadCarrito, precio, nombreProducto,descripcion,precioUnitario,stock,imagenProducto,email,nombreMarca  FROM CARRITO INNER JOIN PRODUCTOS on CARRITO.idProductos=PRODUCTOS.idProductos INNER JOIN USUARIO on CARRITO.idUsuario=USUARIO.idUsuario INNER JOIN MARCA on PRODUCTOS.idMarca=MARCA.idMarca",
+    "SELECT idCarrito,CARRITO.idProductos,CARRITO.idUsuario, cantidadCarrito, precio, nombreProducto,descripcion,precioUnitario,stock,imagenProducto,email,nombreMarca  FROM CARRITO INNER JOIN PRODUCTOS on CARRITO.idProductos=PRODUCTOS.idProductos INNER JOIN USUARIO on CARRITO.idUsuario=USUARIO.idUsuario INNER JOIN MARCA on PRODUCTOS.idMarca=MARCA.idMarca WHERE USUARIO.idUsuario = ?",
+    [id],
     (error, result) => {
       if (error) {
         throw error;
@@ -33,9 +35,11 @@ router.post("/api/carrito/", (req, res) => {
   const precio = req.body.precio;
   const data = { idProductos, idUsuario, cantidadCarrito, precio };
 
-  const sqlAddProduct = "INSERT INTO CARRITO SET ?";
-  const sqlUpdate = "UPDATE CARRITO SET cantidadCarrito = ? WHERE idProductos = ?";
   const sqlSearchCarrito = "SELECT * FROM CARRITO WHERE idProductos = ?";
+  const sqlUpdate =
+    "UPDATE CARRITO SET cantidadCarrito = ? WHERE idProductos = ?";
+  const sqlAddProduct = "INSERT INTO CARRITO SET ?";
+  const sqlSearchProduct = "SELECT * FROM PRODUCTOS WHERE idProductos = ?";
 
   connection.query(sqlSearchCarrito, [idProductos], (error, result) => {
     if (error) {
@@ -44,11 +48,26 @@ router.post("/api/carrito/", (req, res) => {
       if (result.length > 0) {
         const beforeQuantity = result[0].cantidadCarrito;
         const newQuantity = beforeQuantity + cantidadCarrito;
-        connection.query(sqlUpdate, [ newQuantity, idProductos],(error, result) => {
-          if (error) {
-            throw error;
+        connection.query(sqlSearchProduct, [idProductos], (err, result) => {
+          if (err) {
+            throw err;
           } else {
-            res.send({ ok: true, message: "Producto actualizado" });
+            const stock = result[0].stock;
+            if (stock >= newQuantity) {
+              connection.query(
+                sqlUpdate,
+                [newQuantity, idProductos],
+                (err, result) => {
+                  if (err) {
+                    throw err;
+                  } else {
+                    res.send({ ok: true, message: "Agregado al carrito" });
+                  }
+                }
+              );
+            } else {
+              res.send({ ok: false, message: "Stock no disponible" });
+            }
           }
         });
       } else {
@@ -56,7 +75,7 @@ router.post("/api/carrito/", (req, res) => {
           if (error) {
             throw error;
           } else {
-            res.send({ ok: true, message: "Producto agregado al carrito" });
+            res.send({ ok: true, message: "Agregado al carrito" });
           }
         });
       }
@@ -87,37 +106,68 @@ router.get("/api/carrito/:id", cache, (req, res) => {
 
 //3.- EDITAR CARRITO----ESTO SERVIRA PARA EDITAR EL CARRITO
 
-router.put("/api/carrito/:id", (req, res) => {
-  let idCarrito = req.params.id;
-  let cantidadCarrito = req.body.cantidadCarrito;
-  let precio = req.body.precio;
-  let sql = `UPDATE CARRITO SET precio=?, precio=? WHERE idCarrito=${idCarrito}`;
+router.put("/api/carrito/:idCarrito", (req, res) => {
+  const idCarrito = req.params.idCarrito;
+  const idProducto = req.body.product;
+  const quantity = req.body.quantity;
+  const sql = "UPDATE CARRITO SET cantidadCarrito=? WHERE idCarrito=?";
+  const sqlSearchProduct = "SELECT * FROM PRODUCTOS WHERE idProductos=?";
+  const sqlSearchCarrito = "SELECT * FROM CARRITO WHERE idCarrito=?";
+
+  connection.query(sqlSearchProduct, [idProducto], (err, result) => {
+    if (err) {
+      throw err;
+    } else {
+      const stock = result[0].stock;
+      connection.query(sqlSearchCarrito, [idCarrito], (err, result) => {
+        if (err) {
+          throw err;
+        } else {
+          const newQuantity = result[0].cantidadCarrito + quantity;
+          if (stock >= newQuantity) {
+            connection.query(sql, [newQuantity, idCarrito], (err, result) => {
+              if (err) {
+                throw err;
+              } else {
+                res.send({ ok: true, message: "Agregado al carrito" });
+              }
+            });
+          } else {
+            res.send({ ok: false, message: "Stock no disponible" });
+          }
+        }
+      });
+    }
+  });
+});
+
+//4.- ELIMINAR CARRITO--Este delete elimina el ID_CARRITO no confundir y colocar idUsuario,en front captura el id de carrito para eliminarlo.
+router.delete("/api/carrito/:idCarrito", (req, res) => {
+  const id = req.params.idCarrito;
   connection.query(
-    sql,
-    [cantidadCarrito, precio, idCarrito],
-    function (error, results) {
+    "DELETE FROM CARRITO WHERE IdCarrito=?",
+    [id],
+    (error, result) => {
       if (error) {
         throw error;
       } else {
-        res.send(results);
+        res.send({ ok: true, message: "Producto eliminado" });
       }
     }
   );
 });
 
-//4.- ELIMINAR CARRITO--Este delete elimina el ID_CARRITO no confundir y colocar idUsuario,en front captura el id de carrito para eliminarlo.
-router.delete("/api/carrito/:id", (req, res) => {
-  connection.query(
-    "DELETE FROM CARRITO WHERE IdCarrito=?",
-    [req.params.id],
-    function (error, filas) {
-      if (error) {
-        throw error;
-      } else {
-        res.send(filas);
-      }
+router.delete("/api/carrito/:idUsuario", (req, res) => {
+  const idUsuario = req.params.idUsuario;
+  const sql = "DELETE FROM CARRITO WHERE idUsuario = ?";
+
+  connection.query(sql, [idUsuario], (err, result) => {
+    if (err) {
+      throw err;
+    } else {
+      res.send({ ok: true, message: "Carrito Eliminado" });
     }
-  );
+  });
 });
 
 export default router;
