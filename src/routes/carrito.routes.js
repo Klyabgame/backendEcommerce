@@ -158,7 +158,7 @@ router.put("/api/carrito/decrementar/:idCarrito", (req, res) => {
 });
 
 //4.- ELIMINAR CARRITO--Este delete elimina el ID_CARRITO no confundir y colocar idUsuario,en front captura el id de carrito para eliminarlo.
-router.delete("/api/carrito/:idCarrito", (req, res) => {
+router.delete("/api/carrito/producto/:idCarrito", (req, res) => {
   const id = req.params.idCarrito;
   connection.query(
     "DELETE FROM CARRITO WHERE IdCarrito=?",
