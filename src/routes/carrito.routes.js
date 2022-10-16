@@ -141,6 +141,22 @@ router.put("/api/carrito/:idCarrito", (req, res) => {
   });
 });
 
+// Para decrementar el carrito puesto que la ruta de arriba ⬆️ no me sirve
+router.put("/api/carrito/decrementar/:idCarrito", (req, res) => {
+  const idCarrito = req.params.idCarrito;
+  const quantity = req.body.quantity; 
+  const sql = "UPDATE CARRITO SET cantidadCarrito=? WHERE idCarrito=?";
+
+  connection.query(sql, [quantity, idCarrito], (err, result) => {
+    if(err) {
+      throw err;
+    }else{
+      res.send({ok:true, message: 'Carrito actualizado'});
+    }
+  })
+  
+});
+
 //4.- ELIMINAR CARRITO--Este delete elimina el ID_CARRITO no confundir y colocar idUsuario,en front captura el id de carrito para eliminarlo.
 router.delete("/api/carrito/:idCarrito", (req, res) => {
   const id = req.params.idCarrito;
