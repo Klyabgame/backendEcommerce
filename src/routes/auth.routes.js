@@ -66,7 +66,7 @@ router.post("/api/auth/crearUsuario", (req, res) => {
                   const token = await generateJWT(data);
                   data.token = token;
 
-                  data.id = result.insertId;
+                  data.idUsuario = result.insertId;
                   res.send(data);
                 }
               });
@@ -108,8 +108,8 @@ router.post("/api/auth/login", (req, res) => {
 
 // RENUEVA EL TOKEN
 router.get("/api/renew", revalidateToken, async (req, res) => {
-  const payloadToken = req.body;    
-  
+  const payloadToken = req.body;
+
   const token = await generateJWT(payloadToken);
 
   res.send({
