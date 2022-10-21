@@ -35,13 +35,13 @@ router.post("/api/carrito/", (req, res) => {
   const precio = req.body.precio;
   const data = { idProductos, idUsuario, cantidadCarrito, precio };
 
-  const sqlSearchCarrito = "SELECT * FROM CARRITO WHERE idProductos = ?";
+  const sqlSearchCarrito = "SELECT * FROM CARRITO WHERE idProductos = ? AND idUsuario = ?";
   const sqlUpdate =
     "UPDATE CARRITO SET cantidadCarrito = ? WHERE idProductos = ?";
   const sqlAddProduct = "INSERT INTO CARRITO SET ?";
   const sqlSearchProduct = "SELECT * FROM PRODUCTOS WHERE idProductos = ?";
 
-  connection.query(sqlSearchCarrito, [idProductos], (error, result) => {
+  connection.query(sqlSearchCarrito, [idProductos, idUsuario], (error, result) => {
     if (error) {
       throw error;
     } else {
@@ -185,5 +185,6 @@ router.delete("/api/carrito/:idUsuario", (req, res) => {
     }
   });
 });
+
 
 export default router;
