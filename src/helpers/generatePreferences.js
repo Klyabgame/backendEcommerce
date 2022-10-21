@@ -3,7 +3,7 @@ export const generatePreferences = (products) => {
     items: products.map((product) => ({
       id: product.idProductos,
       title: product.nombreProducto,
-      description: product.descripcion,
+      description: product.descripcion.slice(0, 25),
       quantity: product.cantidadCarrito,
       currency_id: "PEN",
       unit_price: Number(product.precioUnitario),
