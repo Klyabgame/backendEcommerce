@@ -4,7 +4,7 @@ dotenv.config()
 
 export const connection = createPool({
   host:process.env.HOST,
-  user:process.env.USET,
+  user:process.env.USER,
   password:process.env.PASSWORD,
   database:process.env.DATABASE
   
