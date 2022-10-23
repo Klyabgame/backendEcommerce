@@ -12,8 +12,7 @@ export const revalidateToken = (req = request, res = response, next) => {
   }
 
   try {
-    const payload = jwt.verify(token, "clavexd");
-    jwt.verify(token, "clavexd");
+    const payload = jwt.verify(token, process.env.TOKEN_SECRET);
 
     delete payload.iat;
     delete payload.exp;

@@ -107,10 +107,10 @@ router.post("/api/auth/login", (req, res) => {
 });
 
 // RENUEVA EL TOKEN
-router.get("/api/renew", revalidateToken, async (req, res) => {
+router.post("/api/renew", revalidateToken, async (req, res) => {
+  
   const payloadToken = req.body;
-
-  const token = await generateJWT(payloadToken);
+  const token = generateJWT(payloadToken);
 
   res.send({
     ok: true,
