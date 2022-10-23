@@ -1,8 +1,11 @@
 import { createPool } from "mysql2";
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 export const connection = createPool({
-  host: "65.109.53.171",
-  user: "schwartz_franz",
-  password: "Ecommerce123",
-  database: "schwartz_Proyecto_ecommerce",
+  host:process.env.host,
+  user:process.env.user,
+  password:process.env.password,
+  database:process.env.database
+  
 });
