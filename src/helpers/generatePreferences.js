@@ -9,8 +9,8 @@ export const generatePreferences = (products) => {
       unit_price: Number(product.precioUnitario),
     })),
     back_urls: {
-      success: "https://licorstore.netlify.app/success/",
-      failure: "https://licorstore.netlify.app/",
+      success: process.env.URL_SUCCESS,
+      failure: "http://localhost:5173/",
     },
   };
   return preference;

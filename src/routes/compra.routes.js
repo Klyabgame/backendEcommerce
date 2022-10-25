@@ -27,41 +27,39 @@ router.get("/api/historialCompras/:id", cache, (req, res) => {
 });
 
 //Consulta para insertar la VENTA de los productos
-
-router.post("/api/compras/", (req, res) => {
-  let totalVenta = req.body.totalVenta;
-  let idUsuario = req.body.idUsuario;
-  let data = { totalVenta, idUsuario };
+router.post("/api/compras/:id", (req, res) => {
+  const id = req.params.id;
+  const totalVenta = req.body.totalVenta;
+  const idUsuario = req.body.idUsuario;
+  const data = { totalVenta, idUsuario };
 
   let sql = "INSERT INTO COMPRA_PRODUCTO_USUARIO SET ?";
-  connection.query(sql, data, function (error, results) {
+  connection.query(sql, data, function (error, result) {
     if (error) {
       throw error;
     } else {
-      /* res.send(results); */
-      Object.assign(data, { id: results.insertId });
-      res.send(data);
+      console.log(result);
+      data.id = result.insertId;
+      res.send({ ok: true, ...data });
     }
   });
 });
 
 //Consulta para insertar los detalle venta de los productos
-
-router.post("/api/detalleCompras/", (req, res) => {
-  let idVenta = req.body.idVenta;
-  let cantidad = req.body.cantidad;
-  let idProductos = req.body.idProductos;
-  let totalDetalle = req.body.totalDetalle;
-  let data = { idVenta, cantidad, idProductos, totalDetalle };
+router.post("/api/detalleCompras/:id", (req, res) => {
+  const id = req.params.id;
+  const cantidad = req.body.cantidad;
+  const idProductos = req.body.idProductos;
+  const totalDetalle = req.body.totalDetalle;
+  const data = { cantidad, idProductos, totalDetalle };
 
   let sql = "INSERT INTO DETALLE_COMPRA_PRODUCTO_USUARIO SET ?";
-  connection.query(sql, data, function (error, results) {
+  connection.query(sql, data, function (error, result) {
     if (error) {
       throw error;
     } else {
-      /* res.send(results); */
-      Object.assign(data, { id: results.insertId });
-      res.send(data);
+      data.id = result.insertId;
+      res.send({ ok: true, ...data });
     }
   });
 });

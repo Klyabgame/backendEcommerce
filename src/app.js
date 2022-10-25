@@ -5,17 +5,19 @@ import authRoutes from './routes/auth.routes.js';
 import ecommerceRoutes from './routes/ecommer.routes.js';
 import carritoRoutes from './routes/carrito.routes.js';
 import compraRoutes from './routes/compra.routes.js';
+import carrito2 from './routes/carrito2.routes.js'
 
 const PORT = process.env.PORT || 3000 ;
 const app = express();
 
 app.use(cors())
-app.use(express.json());
+app.use(express.json({limit: "50mb"}));
 app.use(indexRoutes);
 app.use(authRoutes);
 app.use(ecommerceRoutes);
 app.use(carritoRoutes);
 app.use(compraRoutes);
+app.use(carrito2)
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}!`);
