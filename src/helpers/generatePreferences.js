@@ -10,7 +10,7 @@ export const generatePreferences = (products) => {
     })),
     back_urls: {
       success: process.env.URL_SUCCESS,
-      failure: "http://localhost:5173/",
+      failure: process.env.URL_FAILURE,
     },
   };
   return preference;
