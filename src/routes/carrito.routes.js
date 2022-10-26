@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { connection } from "../db.js";
 import { cache } from "../middleware/cache.js";
+import { validateAddProduct } from "../middleware/validateAddProduct.js";
 
 const router = Router();
 //LEER BIEN LOS COMENTARIOS ANTES DE CUALQUIER USO..
@@ -28,7 +29,7 @@ router.get("/api/carrito/:idUsuario", (req, res) => {
 });
 
 //1.INSERTAR CARRITO--Este metodo nos servira para registrar el carrito
-router.post("/api/carrito/", (req, res) => {
+router.post("/api/carrito/", validateAddProduct,(req, res) => {
   const idProductos = req.body.idProductos;
   const idUsuario = req.body.idUsuario;
   const cantidadCarrito = req.body.cantidadCarrito;
