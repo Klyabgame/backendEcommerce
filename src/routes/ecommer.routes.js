@@ -44,4 +44,27 @@ router.get("/api/ecommerce/product/:id", cache, (req, res) => {
   });
 });
 
+router.get("/api/ecommerce/search/:query", (req, res) => {
+  const { query } = req.params;
+  const sql = `SELECT * FROM PRODUCTOS WHERE LOWER(nombreProducto) LIKE '%${query}%';`;
+
+  if (!query) return res.status(400).send({ ok: false, message: "Hubo un error" });
+
+  connection.query(sql, (err, result) => {
+    if (err) throw err;
+
+    if (result <= 0) return res.send({ ok: true, search: [] });
+
+    for (const product of result) {
+      const b64 = Buffer.from(product.imagenProducto).toString("base64");
+      const mimeType = "image/png";
+      const url = `data:${mimeType};base64,${b64}`;;
+      product.imagenProducto = url;
+    }
+
+    res.send({ ok: true, search: result });
+  
+  });
+});
+
 export default router;
