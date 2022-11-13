@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 3000 ;
 const app = express();
 
 app.use(cors())
+app.use(express.static("public"))
 app.use(express.json({limit: "50mb"}));
 app.use(indexRoutes);
 app.use(authRoutes);
@@ -22,4 +23,3 @@ app.use(carrito2)
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}!`);
 });
-//hola
