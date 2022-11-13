@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { connection } from "../db.js";
+import { connection } from "../database/db.js";
 
 const router = Router();
 
@@ -16,7 +16,6 @@ router.post("/api/ventas/:id", (req, res) => {
     if (error) {
       throw error;
     } else {
-      //sacame el id de la venta
       idVenta = result.insertId;
       let sqlDetalle =
         "INSERT INTO DETALLE_COMPRA_PRODUCTO_USUARIO (idVenta,cantidad, idProductos, totalDetalle) VALUES ";

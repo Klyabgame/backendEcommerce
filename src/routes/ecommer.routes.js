@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { connection } from "../db.js";
+import { connection } from "../database/db.js";
 import { cache } from "../middleware/cache.js";
 
 const router = Router();
@@ -11,13 +11,6 @@ router.get("/api/ecommerce/products", cache, (req, res) => {
     if (err) {
       throw err;
     }
-    // for (const product of result) {
-    //   const b64 = Buffer.from(product.imagenProducto).toString("base64");
-    //   const mimeType = "image/png";
-    //   const url = `data:${mimeType};base64,${b64}`;
-    //   product.imagenProducto = url;
-    // }
-
     res.send(result);
   });
 });
@@ -32,10 +25,6 @@ router.get("/api/ecommerce/product/:id", cache, (req, res) => {
       throw err;
     } else {
       if (result.length > 0) {
-        // const b64 = Buffer.from(result[0].imagenProducto).toString("base64");
-        // const mimeType = "image/png";
-        // const url = `data:${mimeType};base64,${b64}`;
-        // result[0].imagenProducto = url;
         res.send({ ok: true, result: result[0] });
       } else {
         res.send({ ok: false, message: "Producto no encontrado" });
@@ -54,13 +43,6 @@ router.get("/api/ecommerce/search/:query", (req, res) => {
     if (err) throw err;
 
     if (result <= 0) return res.send({ ok: true, search: [] });
-
-    // for (const product of result) {
-    //   const b64 = Buffer.from(product.imagenProducto).toString("base64");
-    //   const mimeType = "image/png";
-    //   const url = `data:${mimeType};base64,${b64}`;;
-    //   product.imagenProducto = url;
-    // }
 
     res.send({ ok: true, search: result });
   

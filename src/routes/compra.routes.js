@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { connection } from "../db.js";
+import { connection } from "../database/db.js";
 import { cache } from "../middleware/cache.js";
 import mercadoPagoConfig from "../mercadoPago.js";
 import { generatePreferences } from "../helpers/generatePreferences.js";
@@ -12,12 +12,6 @@ router.get("/api/ordersHistory/:id", cache, (req, res) => {
     if (error) {
       throw error;
     } else {
-      for (const product of result) {
-        const b64 = Buffer.from(product.imagenProducto).toString("base64");
-        const mimeType = "image/png"; // e.g., image/png
-        const url = `data:${mimeType};base64,${b64}`;
-        product.imagenProducto = url;
-      }
       res.send({ok: true, orders: result});
     }
   });

@@ -1,12 +1,10 @@
 import { Router } from "express";
-import { connection } from "../db.js";
+import { connection } from "../database/db.js";
 import { cache } from "../middleware/cache.js";
 import { validateAddProduct } from "../middleware/validateAddProduct.js";
 
 const router = Router();
-//LEER BIEN LOS COMENTARIOS ANTES DE CUALQUIER USO..
 
-//Este primer get servira para mostrarnos todos los carritos --EXPERIMENTAL--
 router.get("/api/carrito/:idUsuario", (req, res) => {
   const id = req.params.idUsuario;
   connection.query(
@@ -16,19 +14,13 @@ router.get("/api/carrito/:idUsuario", (req, res) => {
       if (error) {
         throw error;
       } else {
-        for (const product of result) {
-          const b64 = Buffer.from(product.imagenProducto).toString("base64");
-          const mimeType = "image/png"; // e.g., image/png
-          const url = `data:${mimeType};base64,${b64}`;
-          product.imagenProducto = url;
-        }
         res.send(result);
       }
     }
   );
 });
 
-//1.INSERTAR CARRITO--Este metodo nos servira para registrar el carrito
+
 router.post("/api/carrito/", validateAddProduct,(req, res) => {
   const idProductos = req.body.idProductos;
   const idUsuario = req.body.idUsuario;
@@ -84,7 +76,7 @@ router.post("/api/carrito/", validateAddProduct,(req, res) => {
   });
 });
 
-//2.-MOSTRAR CARRITO---Este get nos servira para mostrar todos los carritos pertenecientes a un idUsuario. capturar el id del usuario que a iniciado sesion
+
 router.get("/api/carrito/:id", cache, (req, res) => {
   connection.query(
     "SELECT idCarrito,CARRITO.idProductos,CARRITO.idUsuario, cantidadCarrito, precio, nombreProducto,descripcion,precioUnitario,stock,imagenProducto,email,nombreMarca  FROM CARRITO INNER JOIN PRODUCTOS on CARRITO.idProductos=PRODUCTOS.idProductos INNER JOIN USUARIO on CARRITO.idUsuario=USUARIO.idUsuario INNER JOIN MARCA on PRODUCTOS.idMarca=MARCA.idMarca WHERE CARRITO.idUsuario=?",
@@ -93,12 +85,6 @@ router.get("/api/carrito/:id", cache, (req, res) => {
       if (error) {
         throw error;
       } else {
-        for (const product of result) {
-          const b64 = Buffer.from(product.imagenProducto).toString("base64");
-          const mimeType = "image/png"; // e.g., image/png
-          const url = `data:${mimeType};base64,${b64}`;
-          product.imagenProducto = url;
-        }
         res.send(result);
       }
     }
