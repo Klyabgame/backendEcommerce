@@ -1,5 +1,5 @@
 import { response, request } from "express";
-import { connection } from "../db.js";
+import { connection } from "../database/db.js";
 
 export const validateAddProduct = (req = request, res = response, next) => {
   const idProductos = req.body.idProductos;
