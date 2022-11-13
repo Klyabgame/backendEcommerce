@@ -7,7 +7,6 @@ import { revalidateToken } from "../middleware/revalidateToken.js";
 
 const router = Router();
 
-//REGISTRA , BUSCA POR DNI Y EMAIL
 router.post("/api/auth/crearUsuario", (req, res) => {
   const {
     dni,
@@ -63,7 +62,7 @@ router.post("/api/auth/crearUsuario", (req, res) => {
                   throw error;
                 } else {
                   delete data.password;
-                  const token = await generateJWT(data);
+                  const token =  generateJWT(data);
                   data.token = token;
 
                   data.idUsuario = result.insertId;
