@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { connection } from "../db.js";
+import { connection } from "../database/db.js";
 import bycrypt from "bcrypt";
 import { encryptPassword } from "../helpers/encryptPassword.js";
 import { generateJWT } from "../helpers/jwt.js";
