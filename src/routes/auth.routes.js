@@ -16,7 +16,6 @@ router.post("/api/auth/crearUsuario", (req, res) => {
     direccion,
     contacto1,
     contacto2,
-    fechaNacimiento,
     email,
     password,
     foto,
@@ -31,7 +30,6 @@ router.post("/api/auth/crearUsuario", (req, res) => {
     direccion,
     contacto1,
     contacto2,
-    fechaNacimiento,
     email,
     password,
     foto,
@@ -62,7 +60,7 @@ router.post("/api/auth/crearUsuario", (req, res) => {
                   throw error;
                 } else {
                   delete data.password;
-                  const token =  generateJWT(data);
+                  const token = generateJWT(data);
                   data.token = token;
 
                   data.idUsuario = result.insertId;
@@ -107,7 +105,6 @@ router.post("/api/auth/login", (req, res) => {
 
 // RENUEVA EL TOKEN
 router.post("/api/renew", revalidateToken, async (req, res) => {
-  
   const payloadToken = req.body;
   const token = generateJWT(payloadToken);
 
@@ -164,14 +161,16 @@ router.put("/api/auth/actualizarUsuario/:id", (req, res) => {
 
   connection.query(sql, arrayData, function (error, results) {
     if (error) {
-      throw error;
-    } else {
-      res.send({
-        ok: true,
-        message: "USUARIO ACTUALIZADO CORRECTAMENTE",
-        ...data,
+      return res.status(500).json({
+        ok: faslse,
+        msg: "Algo no salió bien",
       });
     }
+    res.status(200).json({
+      ok: true,
+      message: "Usuario Actualizado",
+      user: { ...data },
+    });
   });
 });
 
